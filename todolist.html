@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>todolist</title>
+        <script src="./vue.js"></script>
+    </head>
+        <body>
+            <div id="root">
+                <input v-model="inputValue"/>
+                <button @click="handleSubmit">submit</button>
+                <ul>
+                    <!--    <li v-for="(item,index) of list" :key="index">{{item}}</li>  -->
+                    <todo-item v-for="(item,index) of list" :key="index" :content="item"></todo-item>
+                    <!--定义一下conten这个属性，来传递我们的item值-->
+                </ul>
+            </div>
+
+        </body>
+        <script>
+
+            //Vue.component('todo-item',{template:'<li>item</li>'})   
+            //全局组件
+
+
+            var todoItem = {
+                props:['content'],    //要在新定义的组件中接收一下这个
+                template: '<li>{{content}}</li>'
+            }  //定义的是局部组件，局部组件想要在html里面使用标签时，要在下面的实例中定义一下这个组件
+
+            new Vue ({
+                el:"#root",
+                components:{
+                    'todo-item':todoItem    //就是这里了，定义之后就可以使用局部组件的标签
+                },
+                data:{
+                    inputValue:'',
+                    list:[]
+                },
+                methods:{
+                    handleSubmit :function(){
+                        this.list.push(this.inputValue) //push函数将inputValue输入的值循环输出到list数组中
+                        this.inputValue = ''
+                    },
+               
+                }
+            })
+        </script>
+</html>

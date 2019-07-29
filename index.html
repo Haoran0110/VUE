@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+            <meta charset="utf-8">
+            <title>Vue</title>
+            <script src="./vue.js"></script>
+    </head>
+    <body>
+
+        <!--挂载点，模板，实例的关系-->        
+        <div id="root">
+            <!--引用数据的几种写法-->
+            <h1 v-on:click="handleClick" v-bind:title="title">{{msg}}</h1> <!--两个花括号替代原生代码--><!--为msg绑定一个点击事件v-on:click或@click，对应下面的methods方法-->
+            <h2 v-text="number" ></h2> 
+            <h3 v-html="content" :title="title" @click="clickTest"></h3> <!-- v-html和v-text的作用是一样的，只不过v-html会将data中的内容进行转译 -->
+            <input v-model="content2"/> <!--   v-model实现了一个数据双向绑定  -->
+            <div>{{content2}}</div>
+
+
+            姓<input v-model="firstName"/>
+            名<input v-model="lastName"/>
+            <div>{{fullname}}</div>
+            <div>{{count}}</div>
+
+            <div v-if="show">{{msg}}</div>   <!--   v-if，v-show 指令来控制内容的显示与隐藏，但是方式不同，详情见笔记 -->
+            <button @click="buttonClick">toggle</button>
+
+            <ul>
+                <li v-for="(item,index) of list" :key="index">{{item}}</li>  <!--  v-for指令用来做需要循环展示的内容 -->
+                <!--需要注意的一点是，如果数组里面有内容是一样的，(item,index)前面的item表示的是内容，后面的index表示的是它的位置-->
+            </ul>
+        </div>  <!--div标签则为vue实例的挂载点-->
+        <script>
+            new Vue({
+                el:"#root",   //vue这个实例和哪个DOM做绑定，用el中的#绑定div中的id，el对应着外部的div挂载点
+               /**
+                * template:'<h1>hello {{msg}}</h1>', 
+                * template是模板，写在div里面的内容以模板形式写在实例中效果是一样的
+                */
+                data:{
+                    msg:"hello world", //data里面存放id=root里面的数据
+                    number:"456",
+                    content:"<h3>hhh</h3>",
+                    title:"this is hello world",
+                    content2:"this is content2",
+                    
+                    firstName:'',
+                    lastName:'',
+                    count:0,
+                    
+                    show:true,
+
+                    list:[1,1,3]   //需要一个循环展示的时候，对应上面的v-for指令
+                },
+                //methods来定义上述的handleClick函数
+                methods:{ 
+                    handleClick :function () {
+                        alert(123),
+                        this.number = "789" //this.number中的number匹配的是data中的number
+                    },
+                    clickTest :function (){  
+                        this.content = "ooo"
+                    },
+                    buttonClick :function(){
+                        this.show = !this.show
+                    }
+                },
+                computed:{  //计算属性，在computed里面可以定义一个通过一些属性计算而来的新属性
+                    fullname :function(){
+                        return this.firstName + '  ' + this.lastName
+                    }
+                },
+                watch:{    //侦听器，一旦某一个属性发生变化，可以在侦听器里面写一些业务逻辑
+                    fullname :function(){
+                        this.count++
+                    }
+                }
+            })
+            /**
+            var dom = document.getElementById("root");
+            dom.innerHTML = "hello";
+            vue中的实例里面的数据和dom中的内容替代了原生代码中的这个部分
+            **/
+        </script>
+    </body>
+</html>
