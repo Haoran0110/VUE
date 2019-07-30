@@ -11,8 +11,14 @@
                 <button @click="handleSubmit">submit</button>
                 <ul>
                     <!--    <li v-for="(item,index) of list" :key="index">{{item}}</li>  -->
-                    <todo-item v-for="(item,index) of list" :key="index" :content="item"></todo-item>
-                    <!--定义一下conten这个属性，来传递我们的item值-->
+                    <todo-item 
+                        v-for="(item,index) of list" 
+                        :key="index" 
+                        :content="item" 
+                        :index="index"
+                        @delete="handleDelete">    <!--  父组件通过定义属性的方式向子组件传递参数-->
+                    </todo-item>
+                    <!--定义一下content这个属性，来传递我们的item值-->
                 </ul>
             </div>
 
@@ -22,10 +28,15 @@
             //Vue.component('todo-item',{template:'<li>item</li>'})   
             //全局组件
 
-
             var todoItem = {
-                props:['content'],    //要在新定义的组件中接收一下这个
-                template: '<li>{{content}}</li>'
+                props:['content','index'],    //要在新定义的组件中接收一下这个
+                template: '<li @click="handleClick">{{content}}</li>',
+                methods:{
+                    handleClick :function(){
+                        this.$emit('delete',this.index)    //通过对应的下标找到删除的对象
+                                                            //子组件通过$emit触发父组件的自定义事件
+                    }
+                }
             }  //定义的是局部组件，局部组件想要在html里面使用标签时，要在下面的实例中定义一下这个组件
 
             new Vue ({
@@ -42,7 +53,9 @@
                         this.list.push(this.inputValue) //push函数将inputValue输入的值循环输出到list数组中
                         this.inputValue = ''
                     },
-               
+                    handleDelete :function(index){
+                        this.list.splice(index,1)
+                    }
                 }
             })
         </script>
